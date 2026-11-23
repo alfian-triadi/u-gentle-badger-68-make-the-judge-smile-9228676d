@@ -15,12 +15,21 @@ const ENTRY =
   'The warung lady slipped an extra krupuk into my bag and whispered, "for the road — you look tired." I walked home grinning at nothing, still hearing it.';
 
 // Gate: the entry must be 1-200 characters and not only whitespace.
+// It must also be exactly one line: no newline characters and no
+// control characters (other than none allowed), which would break the
+// one-line entry format.
 const length = [...ENTRY].length;
 if (length < 1 || length > 200) {
   throw new Error(`entry must be 1-200 characters, got ${length}`);
 }
 if (ENTRY.trim().length === 0) {
   throw new Error("entry must not be only whitespace");
+}
+if (/[\r\n]/.test(ENTRY)) {
+  throw new Error("entry must be exactly one line (no newline characters)");
+}
+if (/[\u0000-\u001F\u007F]/.test(ENTRY)) {
+  throw new Error("entry must not contain control characters");
 }
 
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
